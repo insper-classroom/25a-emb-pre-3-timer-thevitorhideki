@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "ms-vscode.cmake-tools",
+    "ms-vscode.cpptools",
+    "wokwi.wokwi-vscode",
+    "github.vscode-github-actions"
+  ]
+}
