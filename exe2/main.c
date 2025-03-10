@@ -57,39 +57,53 @@ int main() {
 
     repeating_timer_t timer_0;
     repeating_timer_t timer_1;
+    int timer_r_exists = 0;
+    int timer_g_exists = 0;
 
     while (true) {
 
         if (flag_r) {
-            if (!add_repeating_timer_ms(-500, timer_0_callback, NULL, &timer_0)) {
-                printf("Failed to add timer\n");
+            flag_r = 0;
+            if (timer_r_exists) {
+                cancel_repeating_timer(&timer_0);
+                gpio_put(LED_PIN_R, 0);
+                LED_STATE_R = 0;
+                timer_r_exists = 0;
+            } else {
+                if (!add_repeating_timer_ms(-500, timer_0_callback, NULL, &timer_0)) {
+                    printf("Failed to add timer\n");
+                } else {
+                    timer_r_exists = 1;
+                }
             }
-
-            if (g_timer_0) {
-                LED_STATE_R = !LED_STATE_R;
-                gpio_put(LED_PIN_R, LED_STATE_R);
-                g_timer_0 = 0;
-            }
-        } else {
-            cancel_repeating_timer(&timer_0);
-            gpio_put(LED_PIN_R, 0);
-            LED_STATE_R = 0;
         }
 
         if (flag_g) {
-            if (!add_repeating_timer_ms(-250, timer_1_callback, NULL, &timer_1)) {
-                printf("Failed to add timer\n");
+            flag_g = 0;
+            if (timer_g_exists) {
+                cancel_repeating_timer(&timer_1);
+                gpio_put(LED_PIN_G, 0);
+                LED_STATE_G = 0;
+                timer_g_exists = 0;
+            } else {
+                if (!add_repeating_timer_ms(-250, timer_1_callback, NULL, &timer_1)) {
+                    printf("Failed to add timer\n");
+                } else {
+                    timer_g_exists = 1;
+                }
             }
+        }
 
-            if (g_timer_1) {
-                LED_STATE_G = !LED_STATE_G;
-                gpio_put(LED_PIN_G, LED_STATE_G);
-                g_timer_1 = 0;
-            }
-        } else {
-            cancel_repeating_timer(&timer_1);
-            gpio_put(LED_PIN_G, 0);
-            LED_STATE_R = 1;
+        if (g_timer_0) {
+            gpio_put(LED_PIN_R, !LED_STATE_R);
+            LED_STATE_R = !LED_STATE_R;
+            g_timer_0 = 0;
+        }
+
+        if (g_timer_1) {
+            gpio_put(LED_PIN_G, !LED_STATE_G);
+            LED_STATE_G = !LED_STATE_G;
+            g_timer_1 = 0;
         }
     }
 }
